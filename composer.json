@@ -1,0 +1,25 @@
+{
+  "name": "anciented/wp-encrypted-uploads",
+  "description": "Keep your uploaded files safe by encrypting them and setting specific permission for every role.",
+  "type": "wordpress-plugin",
+  "authors": [
+    {
+      "name": "Ahmed Hussein",
+      "email": "ahmed@anciented.com.eg"
+    }
+  ],
+  "config": {
+    "platform": {
+      "php": "5.6"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Ahmed\\": "server/"
+    }
+  },
+  "require": {
+    "rdlowrey/auryn": "^1.4",
+    "mustache/mustache": "^2.13"
+  }
+}
