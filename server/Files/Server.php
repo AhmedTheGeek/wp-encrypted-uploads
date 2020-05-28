@@ -24,6 +24,7 @@ class Server {
 			header( 'Content-Type: ' . mime_content_type( $file_path ) );
 			header( 'Content-Length: ' . filesize( $file_path ) );
 			fpassthru( $file );
+			fclose($file);
 			exit();
 		} else {
 			header( 'Content-Type: text/plain' );
