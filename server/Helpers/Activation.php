@@ -6,13 +6,33 @@ class Activation {
 
 	public function activation_hooks() {
 		$this->create_custom_upload_directory();
+		$this->add_rewrite_rules();
+	}
+
+	public function add_rewrite_rules() {
+		$path = ABSPATH . '.htaccess';
+		if ( file_exists( $path ) ) {
+			$file          = fopen( $path, 'r+' );
+			$content       = fread( $file, filesize( $path ) );
+			$rule_position = strpos( $content, "# BEGIN WP-Encrypted-Uploads" );
+			if ( $rule_position === false ) {
+				$plugin_rule_file_path = ANCENC_PATH . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . '.htaccess';
+				$plugin_rule_file      = fopen( $plugin_rule_file_path, 'r' );
+				$plugin_rule_content   = fread( $plugin_rule_file, filesize( $plugin_rule_file_path ) );
+				$new_content           = $content . $plugin_rule_content;
+				ftruncate($file, 0);
+				fwrite( $file, $new_content );
+				fclose( $file );
+				fclose( $plugin_rule_file );
+			}
+		}
 	}
 
 	public function create_custom_upload_directory() {
 		$created = get_option( 'ancenc_custom_directory_created', false );
 
 		if ( $created === false ) {
-			$custom_name = ANCENC_DIR_PREFIX . String::random( 12 );
+			$custom_name = ANCENC_DIR_PREFIX . '_' . String::random( 12 );
 			if ( defined( 'WP_CONTENT_DIR' ) ) {
 				$folder_path = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . $custom_name;
 			} else {

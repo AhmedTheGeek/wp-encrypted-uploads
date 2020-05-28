@@ -8,8 +8,8 @@ class Menu {
 
 	public function register_menus() {
 		add_menu_page(
-			__( 'Encrypted Uploads', 'ancenc' ),
-			__( 'Encrypted Uploads', 'ancenc' ),
+			__( 'WP Encrypted', 'ancenc' ),
+			__( 'WP Encrypted', 'ancenc' ),
 			'manage_options',
 			'ancenc',
 			array( &$this, 'render_menu' ),
