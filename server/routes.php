@@ -4,13 +4,19 @@ namespace ANCENC;
 
 use ANCENC\Admin\Menu;
 use ANCENC\Files\Manager;
+use ANCENC\PublicDependencies\Style;
 
 add_action( 'admin_menu', function () {
-	$menu = new Menu();
+	$dic    = DicLoader::get_instance()->get_dic();
+	$menu = $dic->make('ANCENC\Admin\Menu');
 	$menu->register_menus();
 } );
 
 add_action( 'init', function () {
+
+	$style_deps = new Style();
+	$style_deps->register_assets();
+
 	$file_manager = new Manager();
 	$file_manager->register_handlers();
 
