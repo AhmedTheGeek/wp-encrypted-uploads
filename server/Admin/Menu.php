@@ -27,9 +27,15 @@ class Menu {
 	public function render_menu() {
 		$this->public_css_deps->load_admin_dependencies();
 
-		$renderer = new Renderer();
+		$renderer         = new Renderer();
+		$settings_manager = new Settings();
+		$settings_manager->autoload_options();
+
+		$settings         = $settings_manager->object;
+
 		$renderer->render( 'menu', array(
-			'name' => 'ahmed'
+			'name'     => 'ahmed',
+			'available_file_types' => array_values(wp_get_mime_types())
 		) );
 	}
 
