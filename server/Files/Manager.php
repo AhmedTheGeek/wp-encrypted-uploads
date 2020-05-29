@@ -12,13 +12,21 @@ class Manager {
 	public function __construct() {
 		$this->upload_dir  = get_option( 'ancenc_custom_directory', 'wp_ancenc' );
 		$this->upload_path = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . $this->upload_dir;
+
+		add_action( 'ancenc_get_upload_dir', array( &$this, 'get_upload_dir' ) );
+		add_action( 'ancenc_get_upload_path', array( &$this, 'get_upload_path' ) );
+		add_action( 'ancenc_can_handle_type', array( &$this, 'can_handle_type' ) );
 	}
 
-	public function get_upload_dir() {
+	public function can_handle_type($type) {
+		return false;
+	}
+
+	public function get_upload_dir( $dir = '' ) {
 		return $this->upload_dir;
 	}
 
-	public function get_upload_path() {
+	public function get_upload_path( $path = '' ) {
 		return $this->upload_path;
 	}
 
@@ -42,6 +50,7 @@ class Manager {
 
 	public function handle_uploaded_file( $file ) {
 		$file['file'] = $this->move_uploaded_file( $file['file'] );
+
 		return $file;
 	}
 

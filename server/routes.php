@@ -3,16 +3,20 @@
 namespace ANCENC;
 
 use ANCENC\Admin\Menu;
+use ANCENC\Admin\Settings;
 use ANCENC\Files\Manager;
+use ANCENC\PublicDependencies\Javascript;
 use ANCENC\PublicDependencies\Style;
 
 add_action( 'admin_menu', function () {
-	$dic    = DicLoader::get_instance()->get_dic();
-	$menu = $dic->make('ANCENC\Admin\Menu');
+	$dic  = DicLoader::get_instance()->get_dic();
+	$menu = $dic->make( 'ANCENC\Admin\Menu' );
 	$menu->register_menus();
 } );
 
 add_action( 'init', function () {
+	$js_deps = new Javascript();
+	$js_deps->register_assets();
 
 	$style_deps = new Style();
 	$style_deps->register_assets();
@@ -27,4 +31,10 @@ add_action( 'init', function () {
 			$server->handle_file_serving( $_GET['ancenc_file'] );
 		}
 	}
+} );
+
+add_action( 'admin_init', function () {
+	$settings_manager = new Settings();
+	$settings_manager->register_ajax_actions();
+	$settings_manager->register_filters();
 } );
