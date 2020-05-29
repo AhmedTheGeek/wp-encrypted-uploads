@@ -509,7 +509,8 @@
 }
 
 .ancenc-wrap .ancenc-icon-loader:before {
-    content: "N"
+    content: "\f111";
+    font-family: 'dashicons' !important;
 }
 
 .ancenc-wrap .ancenc-icon-calendar:before {
@@ -14226,4 +14227,13 @@ button.wp-ancenc-all {
         font-size: 14px;
         height: 23px
     }
+}
+
+.ancenc-notice-icon{
+    font-family: 'dashicons';
+}
+
+.ancenc-hint-text{
+    color: #bfbfbf;
+    font-size: 13px;
 }

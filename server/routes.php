@@ -2,9 +2,9 @@
 
 namespace ANCENC;
 
-use ANCENC\Admin\Menu;
 use ANCENC\Admin\Settings;
 use ANCENC\Files\Manager;
+use ANCENC\Files\MIME_Types;
 use ANCENC\PublicDependencies\Javascript;
 use ANCENC\PublicDependencies\Style;
 
@@ -21,7 +21,8 @@ add_action( 'init', function () {
 	$style_deps = new Style();
 	$style_deps->register_assets();
 
-	$file_manager = new Manager();
+	$dic = DicLoader::get_instance()->get_dic();
+	$file_manager = $dic->make('ANCENC\Files\Manager');
 	$file_manager->register_handlers();
 
 	if ( isset( $_GET['ancenc_action'] ) && $_GET['ancenc_action'] == 'ancenc_get_file' ) {
@@ -37,4 +38,5 @@ add_action( 'admin_init', function () {
 	$settings_manager = new Settings();
 	$settings_manager->register_ajax_actions();
 	$settings_manager->register_filters();
+
 } );

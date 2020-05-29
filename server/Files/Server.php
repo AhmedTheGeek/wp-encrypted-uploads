@@ -23,6 +23,7 @@ class Server {
 			$file = fopen( $file_path, 'r' );
 			header( 'Content-Type: ' . mime_content_type( $file_path ) );
 			header( 'Content-Length: ' . filesize( $file_path ) );
+
 			fpassthru( $file );
 			fclose($file);
 			exit();

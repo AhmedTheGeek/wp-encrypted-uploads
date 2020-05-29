@@ -7,6 +7,7 @@ if (ANCENC !== undefined) {
 
         $('#wp-ancenc-save-settings').click((evt) => {
             evt.preventDefault();
+            $('.ancenc-icon-loader').removeClass('ancenc-hidden');
             $.ajax(ANCENC.ajax_url, {
                 method: 'POST',
                 data: {
@@ -15,7 +16,11 @@ if (ANCENC !== undefined) {
                     data: $('#wp-ancenc-settings-form').serialize()
                 }
             }).then(data => {
-                console.log(data);
+                $("#ancenc-ajax-notice").toggle();
+                $('.ancenc-icon-loader').addClass('ancenc-hidden');
+                setTimeout(function () {
+                    $("#ancenc-ajax-notice").toggle();
+                }, 5000);
             })
         })
     })

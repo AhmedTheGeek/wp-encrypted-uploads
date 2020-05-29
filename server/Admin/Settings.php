@@ -2,6 +2,8 @@
 
 namespace ANCENC\Admin;
 
+use ANCENC\Files\MIME_Types;
+
 class Settings {
 
 	private $option_prefix = 'ancenc_';
@@ -29,8 +31,10 @@ class Settings {
 	public function setting_checked( $query ) {
 		$settings = $this->load_section_settings( $query['section'] );
 		if ( $settings !== false ) {
-			if ( isset( $query['name'] ) && is_array( $settings[ $query['name'] ] ) ) {
-				return in_array( $query['value'], $settings[ $query['name'] ]);
+			if ( isset( $settings[ $query['name'] ] ) && is_array( $settings[ $query['name'] ] ) ) {
+				return in_array( $query['value'], $settings[ $query['name'] ] );
+			} else {
+				return in_array( $query['name'], $settings );
 			}
 		}
 
@@ -78,6 +82,8 @@ class Settings {
 	}
 
 	public function available_settings() {
+		$mime = new MIME_Types();
+
 		return [
 			[
 				'title'       => 'Enabled File Types',
@@ -95,19 +101,44 @@ class Settings {
 							[
 								'name'     => 'enabled_types[]',
 								'disabled' => false,
-								'value'    => 'images',
-								'label'    => 'Images (any file with an image mime type (jpg, png, gif, ...)',
+								'value'    => 'image',
+								'label'    => __( 'Image Files' ),
+								'hint'     => __( 'Files with extensions: ' ) . implode( ' | ', array_keys( $mime->get_image_types() ) ),
 								'checked'  => apply_filters( 'ancenc_settings_checked_for_section', [
 									'section' => 'general',
 									'name'    => 'enabled_types',
-									'value'   => 'images'
+									'value'   => 'image'
+								] )
+							],
+							[
+								'name'     => 'enabled_types[]',
+								'disabled' => false,
+								'value'    => 'audio',
+								'label'    => __( 'Audio Files' ),
+								'hint'     => __( 'Files with extensions: ' ) . implode( ' | ', array_keys( $mime->get_audio_types() ) ),
+								'checked'  => apply_filters( 'ancenc_settings_checked_for_section', [
+									'section' => 'general',
+									'name'    => 'enabled_types',
+									'value'   => 'audio'
+								] )
+							],
+							[
+								'name'     => 'enabled_types[]',
+								'disabled' => false,
+								'value'    => 'video',
+								'label'    => __( 'Video Files' ),
+								'hint'     => __( 'Files with extensions: ' ) . implode( ' | ', array_keys( $mime->get_video_types() ) ),
+								'checked'  => apply_filters( 'ancenc_settings_checked_for_section', [
+									'section' => 'general',
+									'name'    => 'enabled_types',
+									'value'   => 'video'
 								] )
 							],
 							[
 								'name'     => 'enabled_types[]',
 								'disabled' => false,
 								'value'    => 'zip',
-								'label'    => 'Zip files',
+								'label'    => __( 'Zip Files' ),
 								'checked'  => apply_filters( 'ancenc_settings_checked_for_section', [
 									'section' => 'general',
 									'name'    => 'enabled_types',
@@ -118,22 +149,11 @@ class Settings {
 								'name'     => 'enabled_types[]',
 								'disabled' => false,
 								'value'    => 'pdf',
-								'label'    => 'PDF files',
+								'label'    => __( 'PDF Files' ),
 								'checked'  => apply_filters( 'ancenc_settings_checked_for_section', [
 									'section' => 'general',
 									'name'    => 'enabled_types',
 									'value'   => 'pdf'
-								] )
-							],
-							[
-								'name'     => 'enabled_types[]',
-								'disabled' => false,
-								'value'    => 'audio',
-								'label'    => 'Audio Files (mp3, aac, wav, ogg)',
-								'checked'  => apply_filters( 'ancenc_settings_checked_for_section', [
-									'section' => 'general',
-									'name'    => 'enabled_types',
-									'value'   => 'audio'
 								] )
 							]
 						]
@@ -153,6 +173,26 @@ class Settings {
 						'label'      => null,
 						'check_type' => false,
 						'size'       => 100
+					]
+				]
+			],
+			[
+				'title'       => 'Force Download',
+				'description' => "Force file types that could be viewed in the browser (images, PDFs, etc...) to be downloaded when requested.",
+				'options'     => [
+					[
+						'type'       => 'checkbox',
+						'name'       => 'force_download',
+						'single'     => true,
+						'disabled'   => false,
+						'value'      => 'force_download',
+						'label'      => null,
+						'check_type' => true,
+						'checked'    => apply_filters( 'ancenc_settings_checked_for_section', [
+							'section' => 'general',
+							'name'    => 'force_download',
+							'value'   => 'force_download'
+						] )
 					]
 				]
 			]

@@ -10,7 +10,12 @@
 
     <div class="ancenc-floating-notices">
         <div role="alert" id="ancenc-ajax-notice" class="ancenc-notice" aria-live="assertive">
-            <div class="ancenc-notice-content"><div class="ancenc-notice-message"><span class="ancenc-notice-icon ancenc-icon-info ancenc-md" aria-hidden="true"></span><p>Your settings have been updated!</p></div></div>
+            <div class="ancenc-notice-content">
+                <div class="ancenc-notice-message"><span class="ancenc-notice-icon dashicons-info ancenc-md"
+                                                         aria-hidden="true"></span>
+                    <p>Your settings have been updated!</p>
+                </div>
+            </div>
         </div>
         <div role="alert" id="wp-ancenc-s3support-alert" class="ancenc-notice" aria-live="assertive"></div>
     </div>
@@ -115,8 +120,10 @@
                                             {{#check_type}}
                                                 {{>toggle_control}}
                                             {{/check_type}}
-                                            <input name="{{name}}" type="{{type}}" value="{{value}}"
-                                                   {{#disabled}}disabled{{/disabled}} {{#size}}size="{{size}}"{{/size}} />
+                                            {{^check_type}}
+                                                <input name="{{name}}" type="{{type}}" value="{{value}}"
+                                                    {{#disabled}}disabled{{/disabled}} {{#size}}size="{{size}}"{{/size}} />
+                                            {{/check_type}}
                                         {{/single}}
                                         {{^single}}
                                             <ul>
@@ -142,7 +149,7 @@
                             Update settings
                         </button>
 
-                        <span class="ancenc-icon-loader load-spinner ancenc-loading "></span>
+                        <span class="ancenc-icon-loader ancenc-loading ancenc-hidden"></span>
                     </div>
                 </div><!-- end ancenc-box-footer -->
 
