@@ -2,11 +2,14 @@
 
 namespace ANCENC\Helpers;
 
+use ANCENC\Files\Crypto;
+
 class Activation {
 
 	public function activation_hooks() {
 		$this->create_custom_upload_directory();
 		$this->add_rewrite_rules();
+		$this->create_encryption_keys();
 	}
 
 	public function add_rewrite_rules() {
@@ -20,7 +23,7 @@ class Activation {
 				$plugin_rule_file      = fopen( $plugin_rule_file_path, 'r' );
 				$plugin_rule_content   = fread( $plugin_rule_file, filesize( $plugin_rule_file_path ) );
 				$new_content           = $content . $plugin_rule_content;
-				ftruncate($file, 0);
+				ftruncate( $file, 0 );
 				fwrite( $file, $new_content );
 				fclose( $file );
 				fclose( $plugin_rule_file );
@@ -54,5 +57,10 @@ class Activation {
 				Logger::error( __( "We weren't able to create the index.php file in the custom uploads directory, make sure wp-content has the correct permissions.", 'ancenc' ) );
 			}
 		}
+	}
+
+	public function create_encryption_keys() {
+		$crypto = new Crypto();;
+		$crypto->write_keys();
 	}
 }

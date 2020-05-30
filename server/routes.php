@@ -3,6 +3,7 @@
 namespace ANCENC;
 
 use ANCENC\Admin\Settings;
+use ANCENC\Files\Crypto;
 use ANCENC\Files\Manager;
 use ANCENC\Files\MIME_Types;
 use ANCENC\PublicDependencies\Javascript;
@@ -38,5 +39,4 @@ add_action( 'admin_init', function () {
 	$settings_manager = new Settings();
 	$settings_manager->register_ajax_actions();
 	$settings_manager->register_filters();
-
 } );

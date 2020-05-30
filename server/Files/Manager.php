@@ -67,6 +67,8 @@ class Manager {
 
 		if ( $this->can_handle_type( $file ) ) {
 			$file['file'] = $this->move_uploaded_file( $file['file'] );
+			//encrypt file
+			$this->rewrite_encrypted_file( $file['file'] );
 		}
 
 		return $file;
@@ -108,6 +110,16 @@ class Manager {
 		rename( $path, $new_path );
 
 		return $new_path;
+	}
+
+	public function rewrite_encrypted_file( $path ) {
+		$file           = fopen( $path, 'r+' );
+		$file_data      = fread( $file, filesize( $path ) );
+		$crypto         = new Crypto();
+		$encrypted_data = $crypto->encrypt( $file_data );
+		ftruncate( $file, 0 );
+		$wrote = fwrite( $file, $encrypted_data );
+		fclose( $file );
 	}
 
 	private function get_dated_path() {

@@ -15,11 +15,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Ahmed\\": "server/"
+      "ANCENC\\": "server/"
     }
   },
   "require": {
     "rdlowrey/auryn": "^1.4",
-    "mustache/mustache": "^2.13"
+    "mustache/mustache": "^2.13",
+    "vlucas/pikirasa": "dev-master"
   }
 }
