@@ -2,7 +2,7 @@
 
 namespace ANCENC\Helpers;
 
-class String {
+class Str {
 	public static function random( $n ) {
 		$characters   = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		$randomString = '';

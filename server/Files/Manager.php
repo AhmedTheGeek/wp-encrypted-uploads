@@ -3,7 +3,7 @@
 namespace ANCENC\Files;
 
 use ANCENC\Admin\Settings;
-use ANCENC\Helpers\String;
+use ANCENC\Helpers\Str;
 
 class Manager {
 
@@ -102,7 +102,7 @@ class Manager {
 		}
 
 		if ( file_exists( $dated_path . DIRECTORY_SEPARATOR . $new_filename ) ) {
-			$new_filename = String::random( 16 ) . '.' . $ext;
+			$new_filename = Str::random( 16 ) . '.' . $ext;
 		}
 
 		$new_path = $dated_path . DIRECTORY_SEPARATOR . $new_filename;
@@ -113,13 +113,13 @@ class Manager {
 	}
 
 	public function rewrite_encrypted_file( $path ) {
-		$file           = fopen( $path, 'r+' );
-		$file_data      = fread( $file, filesize( $path ) );
 		$crypto         = new Crypto();
-		$encrypted_data = $crypto->encrypt( $file_data );
-		ftruncate( $file, 0 );
-		$wrote = fwrite( $file, $encrypted_data );
-		fclose( $file );
+		$file = $crypto->encrypt( $path );
+		$tmp_path = stream_get_meta_data( $file )['uri'];
+		unlink($path);
+		copy($tmp_path, $path);
+		fclose($file);
+		return true;
 	}
 
 	private function get_dated_path() {

@@ -64,6 +64,15 @@ class Settings {
 		wp_die();
 	}
 
+	public function get_general_setting_option( $option_name ) {
+		$settings_object = $this->get_option( 'settings_general' );
+		if ( array_key_exists( $option_name, $settings_object ) ) {
+			return $settings_object[ $option_name ];
+		}
+
+		return false;
+	}
+
 	public function update_settings_object( $new ) {
 		if ( in_array( $new['settings_section'], $this->allowed_sections ) ) {
 			$update_object = array_map( 'esc_sql', $new );

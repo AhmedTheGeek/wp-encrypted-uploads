@@ -35,7 +35,7 @@ class Activation {
 		$created = get_option( 'ancenc_custom_directory_created', false );
 
 		if ( $created === false ) {
-			$custom_name = ANCENC_DIR_PREFIX . '_' . String::random( 12 );
+			$custom_name = ANCENC_DIR_PREFIX . '_' . Str::random( 12 );
 			if ( defined( 'WP_CONTENT_DIR' ) ) {
 				$folder_path = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . $custom_name;
 			} else {
@@ -60,7 +60,9 @@ class Activation {
 	}
 
 	public function create_encryption_keys() {
-		$crypto = new Crypto();;
-		$crypto->write_keys();
+		if ( get_option( 'ancenc_encryption_key', false ) === false ) {
+			$key = strtoupper( Str::random( 16 ) );
+			update_option( 'ancenc_encryption_key', $key );
+		}
 	}
 }
