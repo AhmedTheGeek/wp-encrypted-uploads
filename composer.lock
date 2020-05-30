@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6a7b28ab1e64eaebd66be00440315ed7",
+    "content-hash": "706dfcf78963b503d4f25ff24b491ed0",
     "packages": [
         {
             "name": "mustache/mustache",
@@ -112,71 +112,18 @@
                 "ioc"
             ],
             "time": "2017-05-15T06:26:46+00:00"
-        },
-        {
-            "name": "vlucas/pikirasa",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/vlucas/pikirasa.git",
-                "reference": "13037864da08933eb716537cfac055d3735d1c16"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/pikirasa/zipball/13037864da08933eb716537cfac055d3735d1c16",
-                "reference": "13037864da08933eb716537cfac055d3735d1c16",
-                "shasum": ""
-            },
-            "require": {
-                "ext-openssl": "*",
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0.0|^5.0.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Pikirasa": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD"
-            ],
-            "authors": [
-                {
-                    "name": "Vance Lucas",
-                    "email": "vance@vancelucas.com",
-                    "homepage": "http://www.vancelucas.com"
-                }
-            ],
-            "description": "PKI public/private RSA key encryption using the OpenSSL extension",
-            "homepage": "https://github.com/vlucas/pikirasa",
-            "keywords": [
-                "Private Key",
-                "crypt",
-                "cryptography",
-                "encryption",
-                "openssl",
-                "pki",
-                "public key",
-                "rsa"
-            ],
-            "time": "2019-06-14T01:10:09+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "vlucas/pikirasa": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
     "platform-overrides": {
         "php": "5.6"
-    }
+    },
+    "plugin-api-version": "1.1.0"
 }

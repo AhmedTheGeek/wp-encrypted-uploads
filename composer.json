@@ -20,7 +20,6 @@
   },
   "require": {
     "rdlowrey/auryn": "^1.4",
-    "mustache/mustache": "^2.13",
-    "vlucas/pikirasa": "dev-master"
+    "mustache/mustache": "^2.13"
   }
 }
