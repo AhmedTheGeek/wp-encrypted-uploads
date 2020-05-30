@@ -91,7 +91,41 @@ class Settings {
 	}
 
 	public function available_settings() {
-		$mime = new MIME_Types();
+		global $wp_roles;
+
+		$mime                   = new MIME_Types();
+		$roles_options_children = [];
+
+		foreach ( $wp_roles->roles as $role ) {
+			$roles_options_children[] = [
+				'name'     => 'enabled_roles[]',
+				'disabled' => false,
+				'value'    => $role['name'],
+				'label'    => __( $role['name'] ),
+				'checked'  => apply_filters( 'ancenc_settings_checked_for_section', [
+					'section' => 'general',
+					'name'    => 'enabled_roles',
+					'value'   => $role['name']
+				] )
+			];
+		}
+
+		$roles_options = [
+			'title'       => 'Enabled Roles',
+			'description' => "Enabled roles will have access to the encrypted files, and will be able to view and download them.",
+			'options'     => [
+				[
+					'type'       => 'checkbox',
+					'name'       => 'enabled_roles',
+					'single'     => false,
+					'disabled'   => false,
+					'value'      => null,
+					'label'      => null,
+					'check_type' => true,
+					'children'   => $roles_options_children
+				]
+			]
+		];
 
 		return [
 			[
@@ -204,8 +238,11 @@ class Settings {
 						] )
 					]
 				]
-			]
+			],
+			$roles_options
 		];
+
+
 	}
 
 	public function get_option( $name, $default = false ) {

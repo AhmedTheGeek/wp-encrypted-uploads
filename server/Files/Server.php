@@ -32,8 +32,30 @@ class Server {
 		return $force_download === 'force_download';
 	}
 
-	public function open_file( $file_path ) {
+	public function can_download() {
 		if ( is_user_logged_in() ) {
+			$roles = wp_get_current_user()->roles;
+			$roles = array_map( function ( $item ) {
+				return ucfirst( $item );
+			}, $roles );
+
+			$enabled_roles = $this->settings_manager->get_general_setting_option( 'enabled_roles' );
+
+			if ( ! is_array( $enabled_roles ) ) {
+				return false;
+			}
+
+			$intersect = array_intersect( $roles, $enabled_roles );
+			if ( ! empty( $intersect ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function open_file( $file_path ) {
+		if ( $this->can_download() ) {
 			$crypto = new Crypto();
 
 			try {
@@ -70,9 +92,12 @@ class Server {
 
 			stream_copy_to_stream( $decrypted_file, $output_stream );
 
+			fclose( $decrypted_file );
+			fclose( $output_stream );
 			exit;
 		} else {
 			http_response_code( 403 );
+			exit();
 		}
 	}
 
