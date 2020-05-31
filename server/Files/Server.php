@@ -71,12 +71,47 @@ class Server {
 			rewind( $decrypted_file );
 
 			$filesize = filesize( $decrypted_file_path );
+			$start  = 0;
+			$end    = $filesize - 1;
+			$output_length = $filesize;
+			if (isset($_SERVER['HTTP_RANGE'])) {
+
+				$c_start = $start;
+				$c_end   = $end;
+
+				list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
+				if (strpos($range, ',') !== false) {
+					header('HTTP/1.1 416 Requested Range Not Satisfiable');
+					header("Content-Range: bytes $start-$end/$filesize");
+					exit;
+				}
+				if ($range == '-') {
+					$c_start = $filesize - substr($range, 1);
+				}else{
+					$range  = explode('-', $range);
+					$c_start = $range[0];
+					$c_end   = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $filesize;
+				}
+				$c_end = ($c_end > $end) ? $end : $c_end;
+				if ($c_start > $c_end || $c_start > $filesize - 1 || $c_end >= $filesize) {
+					header('HTTP/1.1 416 Requested Range Not Satisfiable');
+					header("Content-Range: bytes $start-$end/$filesize");
+					exit;
+				}
+				$start  = $c_start;
+				$end    = $c_end;
+				$output_length = $end - $start + 1;
+				fseek($decrypted_file, $start);
+				header('HTTP/1.1 206 Partial Content');
+			}
 
 			header( 'Content-Description: File Transfer' );
 			header( 'Connection: Keep-Alive' );
 			header( 'Expires: 0' );
 			header( 'Cache-Control: must-revalidate, post-check=0, pre-check=0' );
-			header( 'Content-Length: ' . $filesize );
+			header( 'Content-Length: ' . $output_length );
+			header( 'Accept-Ranges: 0-' . $filesize );
+			header("Content-Range: bytes $start-$end/$filesize");
 
 			if ( $this->is_octet_stream( $mime ) ) {
 				header( 'Content-Type: application/octet-stream' );
