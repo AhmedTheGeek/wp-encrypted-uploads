@@ -10,7 +10,7 @@ class Manager {
 	private $upload_path;
 	private $upload_dir;
 	private $settings_manager;
-
+	private $is_current_attachment_encrypted = false;
 	public function __construct( Settings $settings ) {
 		$this->settings_manager = $settings;
 
@@ -20,7 +20,48 @@ class Manager {
 		add_filter( 'ancenc_get_upload_dir', array( &$this, 'get_upload_dir' ) );
 		add_filter( 'ancenc_get_upload_path', array( &$this, 'get_upload_path' ) );
 		add_filter( 'ancenc_can_handle_type', array( &$this, 'can_handle_type' ) );
+
+		add_filter('wp_get_attachment_image_attributes',array(&$this, 'encrypted_file_thumbnail'), 99);
 	}
+
+	public function register_handlers() {
+		add_filter( 'wp_get_attachment_url', array( &$this, 'modify_attachment_url' ) );
+		add_filter( 'wp_handle_upload', array( &$this, 'handle_uploaded_file' ) );
+	}
+
+	public function handle_uploaded_file( $file ) {
+
+		if ( $this->can_handle_type( $file ) ) {
+			$file['file'] = $this->move_uploaded_file( $file['file'] );
+			$this->rewrite_encrypted_file( $file['file'] );
+		}
+
+		return $file;
+	}
+
+	public function encrypted_file_thumbnail($attr) {
+		if($this->is_current_attachment_encrypted) {
+			$attr['src'] = ANCENC_URL . 'public/images/file_icon.png';
+			$attr['width'] = 46;
+			$attr['height'] = 68;
+		}
+		return $attr;
+	}
+
+	public function modify_attachment_url( $url, $id = null ) {
+
+		if ( $this->is_encrypted_file( $url ) ) {
+			$this->is_current_attachment_encrypted = true;
+			$start_position = strpos( $url, ANCENC_DIR_PREFIX );
+			$path           = substr( $url, $start_position );
+
+			return content_url( $path );
+		}
+
+		$this->is_current_attachment_encrypted = false;
+		return $url;
+	}
+
 
 	public function can_handle_type( $file ) {
 		$file_path = $file['file'];
@@ -54,34 +95,14 @@ class Manager {
 		return file_exists( $this->upload_path . DIRECTORY_SEPARATOR . $filename );
 	}
 
-	public function register_handlers() {
-		add_filter( 'wp_get_attachment_url', array( &$this, 'modify_attachment_url' ) );
-		add_filter( 'wp_handle_upload', array( &$this, 'handle_uploaded_file' ) );
-	}
-
 	public function get_file_name( $path ) {
 		return basename( $path );
 	}
 
-	public function handle_uploaded_file( $file ) {
-
-		if ( $this->can_handle_type( $file ) ) {
-			$file['file'] = $this->move_uploaded_file( $file['file'] );
-			//encrypt file
-			$this->rewrite_encrypted_file( $file['file'] );
-		}
-
-		return $file;
-	}
-
-	public function modify_attachment_url( $url, $id = null ) {
+	private function is_encrypted_file( $url ) {
 		$start_position = strpos( $url, ANCENC_DIR_PREFIX );
-		$path           = substr( $url, $start_position );
-		if ( $start_position !== false ) {
-			return content_url( $path );
-		}
 
-		return $url;
+		return $start_position !== false;
 	}
 
 	private function get_file_ext( $filename ) {
@@ -113,12 +134,13 @@ class Manager {
 	}
 
 	public function rewrite_encrypted_file( $path ) {
-		$crypto         = new Crypto();
-		$file = $crypto->encrypt( $path );
+		$crypto   = new Crypto();
+		$file     = $crypto->encrypt( $path );
 		$tmp_path = stream_get_meta_data( $file )['uri'];
-		unlink($path);
-		copy($tmp_path, $path);
-		fclose($file);
+		unlink( $path );
+		copy( $tmp_path, $path );
+		fclose( $file );
+
 		return true;
 	}
 
