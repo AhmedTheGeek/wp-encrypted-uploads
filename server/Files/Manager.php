@@ -11,6 +11,7 @@ class Manager {
 	private $upload_dir;
 	private $settings_manager;
 	private $is_current_attachment_encrypted = false;
+
 	public function __construct( Settings $settings ) {
 		$this->settings_manager = $settings;
 
@@ -21,7 +22,7 @@ class Manager {
 		add_filter( 'ancenc_get_upload_path', array( &$this, 'get_upload_path' ) );
 		add_filter( 'ancenc_can_handle_type', array( &$this, 'can_handle_type' ) );
 
-		add_filter('wp_get_attachment_image_attributes',array(&$this, 'encrypted_file_thumbnail'), 99);
+		add_filter( 'wp_get_attachment_image_attributes', array( &$this, 'encrypted_file_thumbnail' ), 99 );
 	}
 
 	public function register_handlers() {
@@ -39,12 +40,12 @@ class Manager {
 		return $file;
 	}
 
-	public function encrypted_file_thumbnail($attr) {
-		if($this->is_current_attachment_encrypted) {
-			$attr['src'] = ANCENC_URL . 'public/images/file_icon.png';
-			$attr['width'] = 46;
-			$attr['height'] = 68;
+	public function encrypted_file_thumbnail( $attr ) {
+		if ( $this->is_current_attachment_encrypted ) {
+			$attr['src']   = ANCENC_URL . 'public/images/file_icon.png';
+			$attr['style'] = 'background-image: url(' . $attr['src'] . '); width: 50px; height: 67px;';
 		}
+
 		return $attr;
 	}
 
@@ -52,13 +53,14 @@ class Manager {
 
 		if ( $this->is_encrypted_file( $url ) ) {
 			$this->is_current_attachment_encrypted = true;
-			$start_position = strpos( $url, ANCENC_DIR_PREFIX );
-			$path           = substr( $url, $start_position );
+			$start_position                        = strpos( $url, ANCENC_DIR_PREFIX );
+			$path                                  = substr( $url, $start_position );
 
 			return content_url( $path );
 		}
 
 		$this->is_current_attachment_encrypted = false;
+
 		return $url;
 	}
 
