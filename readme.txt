@@ -1,8 +1,8 @@
-=== Plugin Name ===
+=== WP Encrypted Uploads ===
 Contributors: ahmedgeek
 Tags: encryption, uploads, secure, files, AES, encrypted
 Requires at least: 4.5
-Tested up to: 5.2
+Tested up to: 5.4.1
 Requires PHP: 5.6
 Stable tag: 1.0
 License: GPLv2 or later

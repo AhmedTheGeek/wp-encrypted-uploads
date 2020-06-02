@@ -24,7 +24,7 @@ class Menu {
 			'manage_options',
 			'ancenc',
 			array( &$this, 'render_menu' ),
-			'dashicons-lock',
+			'dashicons-shield-alt',
 			6
 		);
 	}
