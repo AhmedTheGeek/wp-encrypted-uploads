@@ -3,9 +3,6 @@
 namespace ANCENC;
 
 use ANCENC\Admin\Settings;
-use ANCENC\Files\Crypto;
-use ANCENC\Files\Manager;
-use ANCENC\Files\MIME_Types;
 use ANCENC\PublicDependencies\Javascript;
 use ANCENC\PublicDependencies\Style;
 
@@ -26,12 +23,10 @@ add_action( 'init', function () {
 	$file_manager = $dic->make('ANCENC\Files\Manager');
 	$file_manager->register_handlers();
 
-	if ( isset( $_GET['ancenc_action'] ) && $_GET['ancenc_action'] == 'ancenc_get_file' ) {
-		if ( isset( $_GET['ancenc_file'] ) ) {
-			$dic    = DicLoader::get_instance()->get_dic();
-			$server = $dic->make( 'ANCENC\Files\Server' );
-			$server->handle_file_serving( $_GET['ancenc_file'] );
-		}
+	if ( isset( $_GET['ancenc_action'] ) && $_GET['ancenc_action'] === 'ancenc_get_file' && isset( $_GET['ancenc_file'] )) {
+		$dic    = DicLoader::get_instance()->get_dic();
+		$server = $dic->make( 'ANCENC\Files\Server' );
+		$server->handle_file_serving( $_GET['ancenc_file'] );
 	}
 } );
 

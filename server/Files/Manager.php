@@ -15,13 +15,13 @@ class Manager {
 		$this->settings_manager = $settings;
 
 		$this->upload_dir  = get_option( 'ancenc_custom_directory', 'wp_ancenc' );
-		$this->upload_path = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . $this->upload_dir;
+		$this->upload_path = trailingslashit(WP_CONTENT_DIR) . $this->upload_dir;
 
 		add_filter( 'ancenc_get_upload_dir', array( &$this, 'get_upload_dir' ) );
 		add_filter( 'ancenc_get_upload_path', array( &$this, 'get_upload_path' ) );
 		add_filter( 'ancenc_can_handle_type', array( &$this, 'can_handle_type' ) );
-
 		add_filter('wp_get_attachment_image_attributes',array(&$this, 'encrypted_file_thumbnail'), 99);
+		add_filter('wp_get_attachment_url', [$this, 'filter_wp_get_attachment_url'], 10);
 	}
 
 	public function register_handlers() {
@@ -100,9 +100,7 @@ class Manager {
 	}
 
 	private function is_encrypted_file( $url ) {
-		$start_position = strpos( $url, ANCENC_DIR_PREFIX );
-
-		return $start_position !== false;
+		return false !== strpos( $url, ANCENC_DIR_PREFIX );
 	}
 
 	private function get_file_ext( $filename ) {
@@ -144,8 +142,29 @@ class Manager {
 		return true;
 	}
 
+	public function filter_wp_get_attachment_url( $url ) {
+		if ( $this->is_encrypted_file( $url ) ) {
+			$baseurl  = $this->upload_path;
+			$filepath = str_replace( $this->get_wp_uploads_dir_url(), '', $url );
+			$filepath = str_replace( $baseurl, '', $filepath );
+
+			return sprintf( '%sindex.php?ancenc_action=ancenc_get_file&ancenc_file=%s', trailingslashit( site_url() ),
+				$filepath );
+		}
+
+		return $url;
+	}
+
+	public function get_wp_uploads_dir_url() {
+		$upload_dir = wp_get_upload_dir();
+		if ( isset( $upload_dir['baseurl'] ) ) {
+			return $upload_dir['baseurl'];
+		}
+
+		return null;
+	}
+
 	private function get_dated_path() {
 		return $this->upload_path . DIRECTORY_SEPARATOR . date( 'Y' ) . DIRECTORY_SEPARATOR . date( 'm' );
 	}
-
 }
