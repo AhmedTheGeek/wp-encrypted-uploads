@@ -24,7 +24,7 @@ class Manager {
 	}
 
 	public function register_handlers() {
-		add_filter( 'wp_handle_upload', array( &$this, 'handle_uploaded_file' ) );
+		add_filter( 'wp_handle_upload', array( $this, 'handle_uploaded_file' ) );
 	}
 
 	public function handle_uploaded_file( $file ) {
@@ -71,12 +71,13 @@ class Manager {
 
 		if ( $check['type'] !== false ) {
 			$mime = explode( '/', $check['type'] );
-			if ( count( $mime ) > 0 && in_array( $mime[0], $settings['enabled_types'] ) ) {
+			if ( count( $mime ) > 0 && ! empty( $settings['enabled_types'] ) && is_array( $settings['enabled_types'] ) && in_array( $mime[0],
+					$settings['enabled_types'] ) ) {
 				return true;
 			}
 		}
 
-		if ( $check['ext'] !== false ) {
+		if ( $check['ext'] !== false && ! empty( $settings['enabled_types'] ) && is_array( $settings['enabled_types'] ) ) {
 			return in_array( $check['ext'], $settings['enabled_types'] );
 		}
 
