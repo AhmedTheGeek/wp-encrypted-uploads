@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'ANCENC_VER', '1.0.0' );
+define( 'ANCENC_VER', '1.0.1' );
 define( 'ANCENC_PATH', __DIR__ );
 define( 'ANCENC_URL', plugin_dir_url( __FILE__ ) );
 define( 'ANCENC_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
