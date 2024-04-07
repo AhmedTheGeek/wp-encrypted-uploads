@@ -10,7 +10,6 @@ class Manager {
 	private $upload_path;
 	private $upload_dir;
 	private $settings_manager;
-	private $is_current_attachment_encrypted = false;
 
 	public function __construct( Settings $settings ) {
 		$this->settings_manager = $settings;
