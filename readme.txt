@@ -52,6 +52,7 @@ Shield your sensitive files with unbreakable encryption! 🛡️  Say goodbye to
 = 1.0.1 =
 * Improvements: The plugin now supports PHP 8+.
 * Bug Fix: Sites running on web servers other than Apache no longer have problem downloading files.
+* Bug Fix: Uploading files will no longer cause an undefined array key error.
 
 = 1.0 =
 * Initial release.
