@@ -14,7 +14,9 @@ class Menu {
 		$this->public_css_deps = $public_css_deps;
 		$this->public_js_deps = $public_js_deps;
 
-		add_action('admin_enqueue_scripts', [&$this, 'enqueue_admin_scripts']);
+		add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
+		add_filter( 'plugin_action_links_' . ANCENC_PLUGIN_BASENAME, [$this, 'filter_plugin_action_links'] );
+
 	}
 
 	public function register_menus() {
@@ -47,6 +49,16 @@ class Menu {
 			'available_settings' => $settings_manager->available_settings(),
 			'update_nonce' => $settings_manager->settings_page_nonce()
 		));
+	}
+
+	public function filter_plugin_action_links($links) {
+		if ( ! is_array( $links ) ) {
+			$links = [];
+		}
+
+		$links[] = 	'<a href="' . esc_url( admin_url( 'upload.php?page=ancenc' ) ) . '">' . __( 'Settings', 'ancenc' ) . '</a>';
+
+		return $links;
 	}
 
 }

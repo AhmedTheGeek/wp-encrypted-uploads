@@ -1,39 +1,39 @@
 === WP Encrypted Uploads ===
 Contributors: ahmedgeek
-Tags: encryption, uploads, secure, files, AES, encrypted
+Tags: encryption, uploads, secure, files, AES
 Requires at least: 4.5
-Tested up to: 5.4.1
+Tested up to: 6.5
 Requires PHP: 5.6
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Encrypt your uploaded files using state-of-the-art encryption standards, and prevent unwanted access to your private data.
+Shield your sensitive files with unbreakable encryption! 🛡️  Say goodbye to prying eyes and take full control of your private data.
 
 == Description ==
 
-WP Encrypted Uploads ueses state-of-the-art AES-128 encryption standard to secure and encrypt uploaded files' contents.
+**WP Encrypted Uploads puts your files under lock and key! 🔒 Upgrade your WordPress file security with cutting-edge AES-128 encryption.**
 
-The plugin supports many file types:
+**This plugin's got your back, covering a wide range of file types:**
 
-* All Image Files.
-* All Audio Files.
-* All Video Files.
-* PDF Files.
-* ZIP Files.
+* Images 🖼️
+* Audio 🎶
+* Video 🎬
+* PDFs 📚
+* ZIPs 🗜️
 
-You can turn on or off encryption for each file type individually, and you can choose which **Role** can have access to the encrypted files.
+**You're the boss! 😎 Customize encryption for each file type and decide which Roles get the keys to the kingdom.**
 
-The plugin supports very fast encryption for large files, and uses php output streams to serve files which doesn't consume any memory resources from your server.
+**Lightning-fast encryption, even for those giant files? Yes, please! 🚀 This plugin uses PHP output streams for smooth, memory-friendly file serving.**
 
 ## Features
 
-* AES-128 encryption for uploaded files.
-* Customize access permissions using WP roles.
-* Force download browser-viewable files like Images, Videos and PDFs.
-* Supports fast encryption for very large files.
+* **Your files get the VIP treatment with AES-128 encryption.** 😎 Think of it like a super-secure vault for your data.
+* **Control who sees what!** 🧐 Tailor access permissions with WordPress roles – you decide who has the keys.
+* **Say goodbye to sneaky peeks!** 👀  Force downloads for those images, videos, and PDFs - no more casual browsing.
+* **Big files, no problem!** ⚡  This plugin handles encryption at lightning speed, even for those hefty uploads.
+* **Security is its middle name.** 🔒  Rest assured, decrypted files never hang around on your server. Temporary files are used for downloads, then *poof!* they're gone.
 
-The plugin is all about data security, which means there's never a decrypted version of your files stored in accessible location on your server, the plugin uses temporary files to serve    files for download.
 
 
 == Installation ==
@@ -48,6 +48,10 @@ The plugin is all about data security, which means there's never a decrypted ver
 1. The settings page.
 
 == Changelog ==
+
+= 1.0.1 =
+* Improvements: The plugin now supports PHP 8+.
+* Bug Fix: Sites running on web servers other than Apache no longer have problem downloading files.
 
 = 1.0 =
 * Initial release.
