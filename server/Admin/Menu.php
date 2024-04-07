@@ -18,14 +18,13 @@ class Menu {
 	}
 
 	public function register_menus() {
-		add_menu_page(
-			__( 'WP Encrypted', 'ancenc' ),
-			__( 'WP Encrypted', 'ancenc' ),
+		add_submenu_page(
+			'upload.php',
+			__( 'Encrypted Uploads', 'ancenc' ),
+			__( 'Encrypted Uploads', 'ancenc' ),
 			'manage_options',
 			'ancenc',
-			array( &$this, 'render_menu' ),
-			'dashicons-lock',
-			6
+			array( &$this, 'render_menu' )
 		);
 	}
 

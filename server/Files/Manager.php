@@ -10,22 +10,20 @@ class Manager {
 	private $upload_path;
 	private $upload_dir;
 	private $settings_manager;
-	private $is_current_attachment_encrypted = false;
+
 	public function __construct( Settings $settings ) {
 		$this->settings_manager = $settings;
+		$this->upload_dir       = get_option( 'ancenc_custom_directory', 'wp_ancenc' );
+		$this->upload_path      = trailingslashit( WP_CONTENT_DIR ) . $this->upload_dir;
 
-		$this->upload_dir  = get_option( 'ancenc_custom_directory', 'wp_ancenc' );
-		$this->upload_path = trailingslashit(WP_CONTENT_DIR) . $this->upload_dir;
-
-		add_filter( 'ancenc_get_upload_dir', array( &$this, 'get_upload_dir' ) );
-		add_filter( 'ancenc_get_upload_path', array( &$this, 'get_upload_path' ) );
-		add_filter( 'ancenc_can_handle_type', array( &$this, 'can_handle_type' ) );
-		add_filter('wp_get_attachment_image_attributes',array(&$this, 'encrypted_file_thumbnail'), 99);
-		add_filter('wp_get_attachment_url', [$this, 'filter_wp_get_attachment_url'], 10);
+		add_filter( 'ancenc_get_upload_dir', [ $this, 'get_upload_dir' ] );
+		add_filter( 'ancenc_get_upload_path', [ $this, 'get_upload_path' ] );
+		add_filter( 'ancenc_can_handle_type', [ $this, 'can_handle_type' ] );
+		add_filter( 'wp_get_attachment_metadata', [ $this, 'filter_wp_get_attachment_image_attributes' ], 10 );
+		add_filter( 'wp_get_attachment_url', [ $this, 'filter_wp_get_attachment_url' ], 10 );
 	}
 
 	public function register_handlers() {
-		add_filter( 'wp_get_attachment_url', array( &$this, 'modify_attachment_url' ) );
 		add_filter( 'wp_handle_upload', array( &$this, 'handle_uploaded_file' ) );
 	}
 
@@ -39,26 +37,26 @@ class Manager {
 		return $file;
 	}
 
-	public function encrypted_file_thumbnail($attr) {
-		if($this->is_current_attachment_encrypted) {
-			$attr['src'] = ANCENC_URL . 'public/images/file_icon.png';
-			$attr['width'] = 46;
-			$attr['height'] = 68;
+	public function filter_wp_get_attachment_image_attributes($data) {
+
+		if ( isset( $data['file'] ) && $this->is_encrypted_file( $data['file'] ) ) {
+			if(isset($data['sizes']['thumbnail'])) {
+				$data['sizes']['thumbnail']['mime-type'] = 'image/encrypted';
+			}
 		}
-		return $attr;
+
+		return $data;
 	}
 
 	public function modify_attachment_url( $url, $id = null ) {
 
 		if ( $this->is_encrypted_file( $url ) ) {
-			$this->is_current_attachment_encrypted = true;
 			$start_position = strpos( $url, ANCENC_DIR_PREFIX );
 			$path           = substr( $url, $start_position );
 
 			return content_url( $path );
 		}
 
-		$this->is_current_attachment_encrypted = false;
 		return $url;
 	}
 
@@ -100,7 +98,7 @@ class Manager {
 	}
 
 	private function is_encrypted_file( $url ) {
-		return false !== strpos( $url, ANCENC_DIR_PREFIX );
+		return false !== strpos( $url, ANCENC_DIR_PREFIX ) || false !== strpos( $url, 'ancenc_file' ) || $this->file_exists( $url );
 	}
 
 	private function get_file_ext( $filename ) {
@@ -147,7 +145,6 @@ class Manager {
 			$baseurl  = $this->upload_path;
 			$filepath = str_replace( $this->get_wp_uploads_dir_url(), '', $url );
 			$filepath = str_replace( $baseurl, '', $filepath );
-
 			return sprintf( '%sindex.php?ancenc_action=ancenc_get_file&ancenc_file=%s', trailingslashit( site_url() ),
 				$filepath );
 		}
@@ -162,6 +159,28 @@ class Manager {
 		}
 
 		return null;
+	}
+
+	public function can_download() {
+		if ( is_user_logged_in() ) {
+			$roles = wp_get_current_user()->roles;
+			$roles = array_map( function ( $item ) {
+				return ucfirst( $item );
+			}, $roles );
+
+			$enabled_roles = $this->settings_manager->get_general_setting_option( 'enabled_roles' );
+
+			if ( ! is_array( $enabled_roles ) ) {
+				return false;
+			}
+
+			$intersect = array_intersect( $roles, $enabled_roles );
+			if ( ! empty( $intersect ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private function get_dated_path() {

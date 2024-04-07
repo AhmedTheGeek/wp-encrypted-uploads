@@ -14,7 +14,7 @@ class Server {
 	}
 
 	public function is_octet_stream( $mime ) {
-		return strpos( $mime, 'pdf' ) !== false || strpos( $mime, 'zip' );
+		return false === strpos( $mime, 'video' ) && false === strpos( $mime, 'image' );
 	}
 
 	public function handle_file_serving( $file ) {
@@ -32,30 +32,8 @@ class Server {
 		return $force_download === 'force_download';
 	}
 
-	public function can_download() {
-		if ( is_user_logged_in() ) {
-			$roles = wp_get_current_user()->roles;
-			$roles = array_map( function ( $item ) {
-				return ucfirst( $item );
-			}, $roles );
-
-			$enabled_roles = $this->settings_manager->get_general_setting_option( 'enabled_roles' );
-
-			if ( ! is_array( $enabled_roles ) ) {
-				return false;
-			}
-
-			$intersect = array_intersect( $roles, $enabled_roles );
-			if ( ! empty( $intersect ) ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	public function open_file( $file_path ) {
-		if ( $this->can_download() ) {
+		if ( $this->file_manager->can_download() ) {
 			$crypto = new Crypto();
 
 			try {
@@ -119,7 +97,7 @@ class Server {
 				header( 'Content-Type: image/png' );
 			}
 
-			if ( $this->will_force_download() ) {
+			if ( $this->will_force_download() || $this->is_octet_stream( $mime ) ) {
 				header( "Content-Disposition: attachment; filename= " . basename( $file_path ) );
 			}
 
