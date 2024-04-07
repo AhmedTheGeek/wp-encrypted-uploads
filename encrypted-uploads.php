@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Encrypted Uploads
-Plugin URI:
+Plugin URI: https://wordpress.org/plugins/wp-encrypted-uploads/
 Description: Keep your uploaded files safe by encrypting them and setting specific permission for every role.
 Author: Anciented
 Version: 1.0
