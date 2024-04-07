@@ -38,11 +38,14 @@ class Manager {
 		return $file;
 	}
 
-	public function filter_wp_get_attachment_image_attributes($attr) {
+	public function filter_wp_get_attachment_image_attributes( $attr ) {
 
-		if ( $this->is_current_attachment_encrypted ) {
-			$attr['src']   = ANCENC_URL . 'public/images/file_icon.png';
-			$attr['style'] = 'background-image: url(' . $attr['src'] . '); width: 50px; height: 67px;';
+		if ( $this->is_encrypted_file( $attr['src'] ) ) {
+			if ( ! $this->can_download() ) {
+				$attr['src'] = ANCENC_URL . 'public/images/file_icon.png';
+			}
+
+			$attr['style'] = 'background-image: url(' . $attr['src'] . ') no-repeat; width: 50px; height: auto;';
 		}
 
 		return $attr;
